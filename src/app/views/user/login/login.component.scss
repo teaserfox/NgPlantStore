@@ -1,0 +1,12 @@
+@use '../../../../../src/assets/styles/user/_auth-form' as *;
+
+.login .container {
+  display: flex;
+  .page-images {
+    margin-left: 49px;
+    img {
+      width: 100%;
+      vertical-align: bottom;
+    }
+  }
+}

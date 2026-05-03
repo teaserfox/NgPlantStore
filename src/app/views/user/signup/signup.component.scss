@@ -1,0 +1,19 @@
+@use '../../../../../src/assets/styles/user/_auth-form' as *;
+
+.signup {
+  margin-top: 10px;
+
+  .container {
+    display: flex;
+
+    .page-images {
+      margin-left: 222px;
+      margin-top: 12px;
+
+      img {
+        width: 100%;
+        vertical-align: bottom;
+      }
+    }
+  }
+}
