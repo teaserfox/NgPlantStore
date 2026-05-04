@@ -11,7 +11,14 @@ import { IfAuthDirective } from './directives/if-auth.directive';
 
 
 @NgModule({
-  declarations: [PasswordRepeatDirective, ProductCardComponent, CategoryFilterComponent, CountSelectorComponent, IfAuthDirective],
+  declarations:
+    [
+      PasswordRepeatDirective,
+      ProductCardComponent,
+      CategoryFilterComponent,
+      CountSelectorComponent,
+      IfAuthDirective
+    ],
   imports: [
     CommonModule,
     FormsModule,

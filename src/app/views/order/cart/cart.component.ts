@@ -22,7 +22,7 @@ export class CartComponent implements OnInit {
   serverStaticPath = environment.serverStaticPath;
   totalAmount: number = 0;
   totalCount: number = 0;
-  // count: number = 1;
+
 
   customOptions: OwlOptions = {
     loop: true,
@@ -50,7 +50,8 @@ export class CartComponent implements OnInit {
     nav: false
   }
 
-  constructor(private productService: ProductService, private cartService: CartService) { }
+  constructor(private productService: ProductService,
+              private cartService: CartService) { }
 
   ngOnInit(): void {
     this.productService.getBestProducts()

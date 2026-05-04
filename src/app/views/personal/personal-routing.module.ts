@@ -4,6 +4,7 @@ import {FavoriteComponent} from "./favorite/favorite.component";
 import {InfoComponent} from "./info/info.component";
 import {OrdersComponent} from "./orders/orders.component";
 
+
 const routes: Routes = [
   {path: 'favorite', component: FavoriteComponent},
   {path: 'info', component: InfoComponent},
