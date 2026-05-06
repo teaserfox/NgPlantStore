@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, HostListener, OnInit} from '@angular/core';
 import {ProductService} from "../../../shared/services/product.service";
 import {ProductType} from "../../../../types/product.type";
 import {CategoryService} from "../../../shared/services/category.service";
@@ -21,6 +21,7 @@ import {AuthService} from "../../../core/auth/auth.service";
   templateUrl: './catalog.component.html',
   styleUrls: ['./catalog.component.scss']
 })
+
 export class CatalogComponent implements OnInit {
 
   products: ProductType[] = [];
@@ -45,6 +46,7 @@ export class CatalogComponent implements OnInit {
               private cartService: CartService,
               private favoriteService: FavoriteService,
               private authService: AuthService,
+              private elementRef: ElementRef,
               private router: Router) {
   }
 
@@ -82,6 +84,17 @@ export class CatalogComponent implements OnInit {
       });
   }
 
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const clickedInside = this.elementRef.nativeElement
+      .querySelector('.catalog-sorting')
+      ?.contains(event.target);
+
+    if (!clickedInside) {
+      this.sortingOpen = false;
+    }
+  }
+
   processCatalog() {
     this.categoryService.getCategoriesWithTypes()
       .subscribe(data => {
@@ -89,12 +102,14 @@ export class CatalogComponent implements OnInit {
 
         this.activatedRoute.queryParams
           .pipe(
-            debounceTime(500)
+            // debounceTime(100)
           )
           .subscribe(params => {
             this.loading = true;
             this.activeParams = ActiveParamsUtil.processParams(params);
-
+            if (!this.activeParams.page) {
+              this.activeParams.page = 1;
+            }
             this.appliedFilters = [];
             this.activeParams.types.forEach(url => {
               for (let i = 0; i < this.categoriesWithTypes.length; i++) {
@@ -139,17 +154,18 @@ export class CatalogComponent implements OnInit {
                   this.pages.push(i);
                 }
                 if (this.cart && this.cart.items.length > 0) {
-                  this.products = data.items.map(product => {
-                    if (this.cart) {
-                      const productInCart = this.cart.items.find(item => item.product.id === product.id);
+                  const updated = data.items.map(product => {
+                      const productInCart = this.cart?.items.find(item => item.product.id === product.id);
                       if (productInCart) {
                         product.countInCart = productInCart.quantity
                       }
+                    const productInFavorite = this.favoriteProducts?.find(item => item.id === product.id);
+                    if (productInFavorite) {
+                      product.isInFavorite = true;
                     }
                     return product;
                   });
-                } else {
-                  this.products = data.items;
+                  this.products = updated;
                 }
 
                 if (this.favoriteProducts) {
@@ -218,6 +234,10 @@ export class CatalogComponent implements OnInit {
         queryParams: this.activeParams
       });
     }
+  }
+
+  trackById(index: number, item: ProductType) {
+    return item.id;
   }
 
 }

@@ -6,15 +6,19 @@
     </div>
 
     <div class="order-info">
-      <div class="order-form" [formGroup]="orderForm" >
+      <div class="order-form" [formGroup]="orderForm">
 
         <div class="order-form-block">
           <div class="order-form-label">
             Выберите способ доставки
           </div>
           <div class="order-form-types">
-            <div class="order-form-type-item" [class.active]="deliveryType === deliveryTypes.delivery" (click)="changeDeliveryType(deliveryTypes.delivery)">Курьером</div>
-            <div class="order-form-type-item" [class.active]="deliveryType === deliveryTypes.self" (click)="changeDeliveryType(deliveryTypes.self)">Самовывоз</div>
+            <div class="order-form-type-item" [class.active]="deliveryType === deliveryTypes.delivery"
+                 (click)="changeDeliveryType(deliveryTypes.delivery)">Курьером
+            </div>
+            <div class="order-form-type-item" [class.active]="deliveryType === deliveryTypes.self"
+                 (click)="changeDeliveryType(deliveryTypes.self)">Самовывоз
+            </div>
           </div>
         </div>
 
@@ -46,7 +50,7 @@
           </div>
         </div>
 
-        <div class="order-form-block">
+        <div class="order-form-block" *ngIf="deliveryType !== deliveryTypes.self">
           <div class="order-form-label">
             Заполните адрес доставки
           </div>
@@ -110,11 +114,11 @@
           <div class="order-details-info-title">Ваш заказ</div>
           <div class="order-details-info-item">
             <div class="order-details-info-item-text">Товаров:</div>
-            <div class="order-details-info-item-data">{{totalCount}}</div>
+            <div class="order-details-info-item-data">{{ totalCount }}</div>
           </div>
           <div class="order-details-info-item">
             <div class="order-details-info-item-text">Общая стоимость:</div>
-            <div class="order-details-info-item-data">{{totalAmount}} BYN</div>
+            <div class="order-details-info-item-data">{{ totalAmount }} BYN</div>
           </div>
           <div class="order-details-info-item">
             <div class="order-details-info-item-text">Стоимость доставки:</div>
@@ -122,13 +126,30 @@
           </div>
           <div class="order-details-info-item">
             <div class="order-details-info-item-text">Итоговая стоимость:</div>
-            <div class="order-details-info-item-data">{{totalAmount + 10}} BYN</div>
+            <div class="order-details-info-item-data">{{ totalAmount + 10 }} BYN</div>
           </div>
         </div>
         <button class="button" (click)="createOrder()">Подтвердить заказ</button>
       </div>
     </div>
-
-
   </div>
 </div>
+
+<ng-template #popup>
+  <div class="order-popup">
+    <div class="order-popup-close" (click)="closePopup()">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <line x1="1.93562" y1="2.6499" x2="13.9564" y2="14.6707" stroke="#A8ABA7" stroke-linecap="round"/>
+        <line x1="13.9238" y1="2.62971" x2="1.90301" y2="14.6505" stroke="#A8ABA7" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="order-popup-title">
+      Благодарим за заказ!
+    </div>
+    <div class="order-popup-content">
+      <div>Ваш заказ оформлен.</div>
+      <div>Вся информация о заказе была выслана вам на почту.</div>
+      <div>Курьер свяжется с вами за два часа до доставки товара.</div>
+    </div>
+  </div>
+</ng-template>

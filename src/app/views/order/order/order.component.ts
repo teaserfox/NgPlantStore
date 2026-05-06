@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {CartService} from "../../../shared/services/cart.service";
 import {CartType} from "../../../../types/cart.type";
 import {checkResponse} from "../../../shared/helpers/response.helper";
@@ -7,6 +7,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {DeliveryType} from "../../../../types/delivery.type";
 import {FormBuilder, Validators} from "@angular/forms";
 import {PaymentType} from "../../../../types/payment.type";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-order',
@@ -34,12 +35,16 @@ export class OrderComponent implements OnInit {
     entrance: [''],
     apartment: [''],
     comment: ['']
-  })
+  });
+
+  @ViewChild('popup') popup!: TemplateRef<ElementRef>;
 
   constructor(private cartService: CartService,
               private router: Router,
               private _snackBar: MatSnackBar,
-              private fb: FormBuilder,) {
+              private fb: FormBuilder,
+              private dialog: MatDialog,) {
+    this.updateDeliveryTypeValidator();
   }
 
   ngOnInit(): void {
@@ -57,7 +62,9 @@ export class OrderComponent implements OnInit {
   }
 
   createOrder(): void {
-    //....
+    // if (this.orderForm.valid) {
+      this.dialog.open(this.popup);
+    // }
   }
 
   calculateTotal() {
@@ -71,7 +78,10 @@ export class OrderComponent implements OnInit {
 
   changeDeliveryType(type: DeliveryType) {
     this.deliveryType = type;
+    this.updateDeliveryTypeValidator();
+  }
 
+  updateDeliveryTypeValidator() {
     if (this.deliveryType === DeliveryType.delivery) {
       this.orderForm.get('street')?.setValidators(Validators.required);
       this.orderForm.get('house')?.setValidators(Validators.required);
@@ -83,7 +93,12 @@ export class OrderComponent implements OnInit {
     }
     this.orderForm.get('street')?.updateValueAndValidity();
     this.orderForm.get('house')?.updateValueAndValidity();
-}
+  }
+
+  closePopup() {
+    //...
+  }
+
 
   protected readonly PaymentType = PaymentType;
 }

@@ -27,20 +27,10 @@ export class HeaderComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.cartService.getCartCount()
-      .subscribe((data: {count: number} | DefaultResponseType ) => {
-        if ((data as DefaultResponseType).error !== undefined) {
-          throw new Error((data as DefaultResponseType).message);
-        }
-        this.count = (data as {count: number}).count;
-      });
-
     this.cartService.count$
       .subscribe(count => {
         this.count = count;
       })
-
-
   }
 
   logout(): void {
@@ -58,6 +48,7 @@ export class HeaderComponent implements OnInit {
   doLogout(): void {
     this.authService.removeTokens();
     this.authService.userId = null;
+    this.cartService.resetCart();
     this.snackBar.open('Вы вышли из системы');
     this.router.navigate(['/']);
   }
