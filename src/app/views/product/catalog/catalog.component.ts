@@ -149,39 +149,25 @@ export class CatalogComponent implements OnInit {
             }
             this.productService.getProducts(this.activeParams)
               .subscribe(data => {
-                this.pages = [];
-                for (let i = 1; i <= data.pages; i++) {
-                  this.pages.push(i);
-                }
-                if (this.cart && this.cart.items.length > 0) {
-                  const updated = data.items.map(product => {
-                      const productInCart = this.cart?.items.find(item => item.product.id === product.id);
-                      if (productInCart) {
-                        product.countInCart = productInCart.quantity
-                      }
-                    const productInFavorite = this.favoriteProducts?.find(item => item.id === product.id);
-                    if (productInFavorite) {
-                      product.isInFavorite = true;
-                    }
-                    return product;
-                  });
-                  this.products = updated;
-                }
 
-                if (this.favoriteProducts) {
-                  this.products = this.products.map(product => {
-                    const productInFavorite = this.favoriteProducts?.find(item => item.id === product.id);
-                    if (productInFavorite) {
-                      product.isInFavorite = true;
-                    }
-                    return product;
-                  })
-                }
+                this.pages = Array.from({ length: data.pages }, (_, i) => i + 1);
+
+                this.products = data.items.map(product => {
+
+                  const productInCart = this.cart?.items?.find(
+                    item => item.product.id === product.id
+                  );
+                  product.countInCart = productInCart ? productInCart.quantity : 0;
+
+                  const productInFavorite = this.favoriteProducts?.find(
+                    item => item.id === product.id
+                  );
+                  product.isInFavorite = !!productInFavorite;
+
+                  return product;
+                });
 
                 this.loading = false;
-                if (!this.products || this.products.length === 0) {
-                  this.products = [];
-                }
               });
           });
       });
