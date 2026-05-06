@@ -119,6 +119,14 @@
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 26px 30px;
+        position: relative;
+        min-height: 400px;
+        .catalog-loading {
+          position: absolute;
+          inset: 0;
+          background: rgba(255, 255, 255, 0.6);
+          z-index: 10;
+        }
       }
     }
 
@@ -177,16 +185,4 @@
   text-align: center;
   padding: 40px 0;
   color: $a-text-color;
-}
-
-.catalog-products {
-  position: relative;
-  min-height: 400px;
-}
-
-.catalog-loading {
-  position: absolute;
-  inset: 0;
-  background: rgba(255, 255, 255, 0.6);
-  z-index: 10;
 }
