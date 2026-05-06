@@ -7,7 +7,12 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {DeliveryType} from "../../../../types/delivery.type";
 import {FormBuilder, Validators} from "@angular/forms";
 import {PaymentType} from "../../../../types/payment.type";
-import {MatDialog} from "@angular/material/dialog";
+import {MatDialog, MatDialogRef} from "@angular/material/dialog";
+import {OrderService} from "../../../shared/services/order.service";
+import {OrderType} from "../../../../types/order.type";
+import {DefaultResponseType} from "../../../../types/default-response.type";
+import {error} from "@angular/compiler-cli/src/transformers/util";
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
   selector: 'app-order',
@@ -38,12 +43,15 @@ export class OrderComponent implements OnInit {
   });
 
   @ViewChild('popup') popup!: TemplateRef<ElementRef>;
+  dialogRef: MatDialogRef<any> | null = null;
 
   constructor(private cartService: CartService,
               private router: Router,
               private _snackBar: MatSnackBar,
               private fb: FormBuilder,
-              private dialog: MatDialog,) {
+              private dialog: MatDialog,
+              private orderService: OrderService)
+  {
     this.updateDeliveryTypeValidator();
   }
 
@@ -62,9 +70,70 @@ export class OrderComponent implements OnInit {
   }
 
   createOrder(): void {
-    // if (this.orderForm.valid) {
-      this.dialog.open(this.popup);
-    // }
+    if (this.orderForm.valid && this.orderForm.value.firstName
+      && this.orderForm.value.lastName
+      && this.orderForm.value.phone
+      && this.orderForm.value.paymentType
+      && this.orderForm.value.email) {
+
+      const paramsObject: OrderType = {
+        deliveryType: this.deliveryType,
+        firstName: this.orderForm.value.firstName,
+        lastName: this.orderForm.value.lastName,
+        phone: this.orderForm.value.phone,
+        paymentType: this.orderForm.value.paymentType,
+        email: this.orderForm.value.email,
+      };
+
+      if (this.deliveryType === DeliveryType.delivery) {
+        if (this.orderForm.value.street) {
+          paramsObject.street = this.orderForm.value.street;
+        }
+        if (this.orderForm.value.apartment) {
+          paramsObject.apartment = this.orderForm.value.apartment;
+        }
+        if (this.orderForm.value.house) {
+          paramsObject.house = this.orderForm.value.house;
+        }
+        if (this.orderForm.value.entrance) {
+          paramsObject.entrance = this.orderForm.value.entrance;
+        }
+      }
+
+      if (this.orderForm.value.comment) {
+        paramsObject.comment = this.orderForm.value.comment;
+      }
+
+
+
+      this.orderService.createOrder(paramsObject)
+        .subscribe({
+          next: (data: OrderType | DefaultResponseType) => {
+            checkResponse<OrderType>(data);
+            this.dialogRef = this.dialog.open(this.popup);
+            this.dialogRef.backdropClick()
+              .subscribe( () => {
+                this.router.navigate(['/']);
+              });
+            this.cartService.resetCart();
+          },
+          error: (errorResponse: HttpErrorResponse) => {
+            if (errorResponse.error && errorResponse.error.message) {
+              this._snackBar.open(errorResponse.error.message);
+            } else {
+              this._snackBar.open('Ошибка заказа')
+            }
+          }
+        });
+    } else {
+      this.orderForm.markAllAsTouched();
+      this._snackBar.open('Заполните необходимые поля')
+    }
+  }
+
+  closePopup() {
+    this.dialogRef?.close();
+    this.router.navigate(['/']);
   }
 
   calculateTotal() {
@@ -94,11 +163,6 @@ export class OrderComponent implements OnInit {
     this.orderForm.get('street')?.updateValueAndValidity();
     this.orderForm.get('house')?.updateValueAndValidity();
   }
-
-  closePopup() {
-    //...
-  }
-
 
   protected readonly PaymentType = PaymentType;
 }
