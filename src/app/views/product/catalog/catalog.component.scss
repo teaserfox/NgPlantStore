@@ -178,3 +178,15 @@
   padding: 40px 0;
   color: $a-text-color;
 }
+
+.catalog-products {
+  position: relative;
+  min-height: 400px;
+}
+
+.catalog-loading {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.6);
+  z-index: 10;
+}
