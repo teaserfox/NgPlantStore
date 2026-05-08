@@ -10,24 +10,35 @@ import {FormBuilder, Validators} from "@angular/forms";
 })
 export class InfoComponent implements OnInit {
 
+  deliveryType: DeliveryType = DeliveryType.delivery;
+  deliveryTypes = DeliveryType;
+  paymentTypes = PaymentType;
+
   userInfoForm = this.fb.group({
     firstName: [''],
     lastName: [''],
     phone: [''],
     fatherName: [''],
     paymentType: [PaymentType.cashToCourier],
-    email: [''],
+    email: ['', Validators.required],
     street: [''],
     house: [''],
     entrance: [''],
     apartment: ['']
   });
 
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder) {
+  }
 
   ngOnInit(): void {
   }
 
-    protected readonly paymentTypes = PaymentType;
-    protected readonly deliveryTypes = DeliveryType;
+  changeDeliveryType(deliveryType: DeliveryType): void {
+    this.deliveryType = deliveryType;
+    this.userInfoForm.markAsDirty();
+  };
+
+  updateUserInfo(): void {
+
+  }
 }
