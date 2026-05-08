@@ -2,8 +2,9 @@ import {DefaultResponseType} from "../../../types/default-response.type";
 
 
 export function checkResponse<T>(data: T | DefaultResponseType): T {
-  if ((data as DefaultResponseType).error !== undefined) {
-    throw new Error((data as DefaultResponseType).message);
+  const response = data as DefaultResponseType;
+  if (response.error !== undefined && response.error !== false) {
+    throw new Error(response.message ?? 'Error');
   }
 
   return data as T;
