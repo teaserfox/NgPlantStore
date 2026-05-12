@@ -108,7 +108,7 @@
         </div>
       </div>
 
-      <button class="button" [disabled]="!(userInfoForm.dirty && userInfoForm.valid)" ]>Сохранить</button>
+      <button class="button" [disabled]="!(userInfoForm.dirty && userInfoForm.valid)" (click)="updateUserInfo()">Сохранить</button>
     </div>
   </div>
   <div class="page-image">

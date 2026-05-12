@@ -13,6 +13,9 @@ import {OrderType} from "../../../../types/order.type";
 import {DefaultResponseType} from "../../../../types/default-response.type";
 import {error} from "@angular/compiler-cli/src/transformers/util";
 import {HttpErrorResponse} from "@angular/common/http";
+import {UserInfoType} from "../../../../types/user-info.type";
+import {UserService} from "../../../shared/services/user.service";
+import {AuthService} from "../../../core/auth/auth.service";
 
 @Component({
   selector: 'app-order',
@@ -50,6 +53,8 @@ export class OrderComponent implements OnInit {
               private _snackBar: MatSnackBar,
               private fb: FormBuilder,
               private dialog: MatDialog,
+              private userService: UserService,
+              private authService: AuthService,
               private orderService: OrderService)
   {
     this.updateDeliveryTypeValidator();
@@ -67,6 +72,32 @@ export class OrderComponent implements OnInit {
         }
         this.calculateTotal();
       });
+    if (this.authService.isLogged$.value) {
+      this.userService.getUserInfo()
+        .subscribe((data: UserInfoType | DefaultResponseType) => {
+          const userInfo = checkResponse<UserInfoType>(data);
+
+          const paramsToUpdate = {
+            firstName: userInfo.firstName ? userInfo.firstName : '',
+            lastName: userInfo.lastName ? userInfo.lastName : '',
+            phone: userInfo.phone ? userInfo.phone : '',
+            fatherName: userInfo.fatherName ? userInfo.fatherName : '',
+            paymentType: userInfo.paymentType ? userInfo.paymentType : PaymentType.cashToCourier,
+            email: userInfo.email ? userInfo.email : '',
+            street: userInfo.street ? userInfo.street : '',
+            house: userInfo.house ? userInfo.house : '',
+            entrance: userInfo.entrance ? userInfo.entrance : '',
+            apartment: userInfo.apartment ? userInfo.apartment : '',
+            comment: ''
+          }
+
+          this.orderForm.setValue(paramsToUpdate);
+          if (userInfo.deliveryType) {
+            this.deliveryType = userInfo.deliveryType;
+          }
+
+        });
+    }
   }
 
   createOrder(): void {

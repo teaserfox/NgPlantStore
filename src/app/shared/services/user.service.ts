@@ -4,12 +4,13 @@ import {environment} from "../../../environments/environment";
 import {HttpClient} from "@angular/common/http";
 import {DefaultResponseType} from "../../../types/default-response.type";
 import {AuthService} from "../../core/auth/auth.service";
-import {OrderType} from "../../../types/order.type";
+import {UserInfoType} from "../../../types/user-info.type";
+
 
 @Injectable({
   providedIn: 'root'
 })
-export class OrderService {
+export class UserService {
 
   count: number = 0;
   private countSubject = new BehaviorSubject<number>(0);
@@ -18,13 +19,11 @@ export class OrderService {
   constructor(private http: HttpClient,
               private authService: AuthService) {}
 
-  createOrder(params: OrderType): Observable<OrderType | DefaultResponseType> {
-    return this.http.post<OrderType | DefaultResponseType>(environment.api + 'orders', params,
-      {withCredentials: true})
+  updateUserInfo(params:UserInfoType): Observable<DefaultResponseType> {
+    return this.http.post<DefaultResponseType>(environment.api + 'user', params)
   }
 
-  // createOrder(params: OrderType): Observable<OrderType | DefaultResponseType> {
-  //   return this.http.get<OrderType | DefaultResponseType>(environment.api + 'orders', params,
-  //     {withCredentials: true})
-  // }
+  getUserInfo(): Observable<UserInfoType | DefaultResponseType> {
+    return this.http.get<UserInfoType | DefaultResponseType>(environment.api + 'user')
+  }
 }

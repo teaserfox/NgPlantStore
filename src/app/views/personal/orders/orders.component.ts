@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import {OrderService} from "../../../shared/services/order.service";
+import {AuthService} from "../../../core/auth/auth.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-orders',
@@ -7,7 +10,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class OrdersComponent implements OnInit {
 
-  constructor() { }
+  constructor(private orderService: OrderService,
+              private authService: AuthService,
+              private router: Router) { }
+
 
   ngOnInit(): void {
   }
