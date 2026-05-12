@@ -23,8 +23,7 @@ export class OrderService {
       {withCredentials: true})
   }
 
-  // createOrder(params: OrderType): Observable<OrderType | DefaultResponseType> {
-  //   return this.http.get<OrderType | DefaultResponseType>(environment.api + 'orders', params,
-  //     {withCredentials: true})
-  // }
+  getOrder(): Observable<OrderType[] | DefaultResponseType> {
+    return this.http.get<OrderType[] | DefaultResponseType>(environment.api + 'orders')
+  }
 }

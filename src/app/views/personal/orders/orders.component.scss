@@ -2,3 +2,10 @@
 @import '../../../../../src/assets/styles/_variables';
 @import '../../../../../src/assets/styles/mixins';
 @import '../../../../../src/assets/styles/personal';
+
+
+.orders {
+  padding-top: 56px;
+  padding-bottom: 156px;
+  .container {}
+}
