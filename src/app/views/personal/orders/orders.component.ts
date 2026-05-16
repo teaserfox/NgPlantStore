@@ -6,6 +6,7 @@ import {OrderType} from "../../../../types/order.type";
 import {DefaultResponseType} from "../../../../types/default-response.type";
 import {checkResponse} from "../../../shared/helpers/response.helper";
 import {UserInfoType} from "../../../../types/user-info.type";
+import {OrderStatusUtil} from "../../../shared/utils/order-status.util";
 
 @Component({
   selector: 'app-orders',
@@ -24,7 +25,13 @@ export class OrdersComponent implements OnInit {
   ngOnInit(): void {
     this.orderService.getOrder()
       .subscribe((data: OrderType[] | DefaultResponseType) => {
-        this.orders = checkResponse<OrderType[]>(data);
+        this.orders = (checkResponse<OrderType[]>(data)).map(item => {
+          const status = OrderStatusUtil.getStatusAndColor(item.status);
+          item.statusRus = status.name;
+          item.color =status.color;
+
+          return item;
+        });
       });
   }
 
